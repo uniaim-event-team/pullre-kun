@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>pullre-kun</title>
+</head>
+<body>
+<table>
+{% for instance in instance_list %}
+  <tr>
+    <td>{{ instance['Name'] }}</td>
+    <td>{{ instance['InstanceId'] }}</td>
+    <td>{{ instance['State'] }}</td>
+    <td>
+      <form action="/server/register" method="post">
+        <input type="hidden" name="InstanceId" value="{{ instance['InstanceId'] }}" />
+        <input type="hidden" name="Name" value="{{ instance['Name'] }}" />
+        <input type="hidden" name="PrivateIpAddress" value="{{ instance['PrivateIpAddress'] }}" />
+        {% if not instance['Registered'] %}
+        <input type="submit" value="register" />
+        {% endif %}
+      </form>
+    </td>
+    <td>
+      <form action="/server/start" method="post">
+        <input type="hidden" name="InstanceId" value="{{ instance['InstanceId'] }}" />
+        {% if instance['State'] != 'running' %}
+        <input type="submit" value="start" />
+        {% endif %}
+      </form>
+    </td>
+    <td>
+      <form action="/server/stop" method="post">
+        <input type="hidden" name="InstanceId" value="{{ instance['InstanceId'] }}" />
+        {% if instance['State'] != 'stopped' %}
+        <input type="submit" value="stop" />
+        {% endif %}
+      </form>
+    </td>
+  </tr>
+{% endfor %}
+</table>
+</body>
+</html>
