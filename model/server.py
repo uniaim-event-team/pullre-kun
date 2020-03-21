@@ -22,6 +22,7 @@ class Server(BaseObject):
     instance_id = Column(String(100))
     name = Column(Text)
     private_ip = Column(String(100))
+    db_schema = Column(Text)
 
     pull_requests = relationship('PullRequest', back_populates='server')
 
@@ -38,5 +39,17 @@ class PullRequest(BaseObject):
     title = Column(Text)
     ref = Column(Text)
     server_id = Column(BigInteger, ForeignKey('servers.id'))
+    is_launched = Column(Integer)
+    db_schema = Column(Text)
 
     server = relationship('Server', back_populates='pull_requests')
+
+
+class GitHubUser(BaseObject):
+    __tablename__ = 'git_hub_users'
+
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    created_at = Column(DateTime, default=current_timestamp(), nullable=False)
+    updated_at = Column(DateTime, default=current_timestamp(), onupdate=current_timestamp(), nullable=False)
+    login = Column(String(128), nullable=False, unique=True)
+    db_schema = Column(Text)

@@ -1,5 +1,6 @@
-import hashlib
 from functools import wraps
+import hashlib
+from time import sleep
 
 from flask import make_response, request
 from werkzeug.datastructures import Authorization
@@ -54,8 +55,8 @@ def basic_authorization():
     if request.method != 'OPTIONS':  # pragma: no cover
         if not auth or not auth.password or \
                 hashlib.sha512(auth.password.encode()).hexdigest() != user_password_dict.get(auth.username):
-            # flash request.data(required)
-            print(request.data)
+            # defence for brute force
+            sleep(1)
             realm = 'Authentication Required'
             res = make_response(realm)
             res.status_code = 401
