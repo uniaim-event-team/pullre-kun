@@ -152,7 +152,9 @@ def check_and_update_pull_request():
                     # drop / create and copy database
                     try:
                         subprocess.check_output(
-                            f'{webapp_settings["base_dir"]}/setup_db.sh {db_schema} {server.db_schema}', shell=True)
+                            f'{webapp_settings["base_dir"]}/setup_db.sh {db_schema} {server.db_schema}'
+                            f' {webapp_settings["mysql_user"]} {webapp_settings["mysql_pw"]}'
+                            f' {webapp_settings["mysql_host"]} {webapp_settings["mysql_port"]}', shell=True)
                     except Exception as ex:
                         print(ex.__dict__)
                         raise ex
