@@ -60,8 +60,6 @@ mysql_dbcon.c = mysql_dbcon.ConnectionPooling(max_overflow=50, pool_size=20)
 def app():
     app = create_app()
     app.debug = True
-    app.config['WTF_CSRF_ENABLED'] = False
-    app.config['WTF_CSRF_METHODS'] = []  # This is the magic
     if False:
         yield app
     return
@@ -72,16 +70,3 @@ def app():
     # yield app
     #
     # ctx.pop()
-
-
-@pytest.fixture(scope='function', autouse=True)
-def scope_function():
-    # setup before function / method
-    files = os.listdir(webapp_settings['base_dir'] + '/')
-    files_pkl = [f for f in files if isinstance(f, str) and f.endswith('.pkl')]
-    files_ctl = [f for f in files if isinstance(f, str) and f.endswith('.ctl')]
-    for f in files_pkl + files_ctl:
-        os.remove(webapp_settings['base_dir'] + '/' + f)
-    # back once to execute a test
-    yield
-    # teardown after function / method
