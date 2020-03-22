@@ -1,0 +1,21 @@
+protocol = https://
+domain = [the domain]
+mysql_user = [username]
+mysql_pw = [password]
+mysql_db = pullre
+mysql_host = [database host... if rds, foo.bar.rds.amazonaws.com]
+mysql_port = 3306
+mysql_additional = charset=utf8mb4
+owner = [github owner of the repository (user)]
+token = [github token]
+repo = [github repository]
+AWS_ACCESS_KEY_ID = [AWS ACCESS KEY ID]
+AWS_SECRET_KEY = [AWS SECRET KEY]
+app_secret_key = somekey
+logging_level = DEBUG
+base_dir = /home/ec2-user/pullre-kun
+target_dir = [directory of the target repository, use fetch/checkout command at this repository.]
+basic_user = [basic username]
+basic_password = [token which created by get_basic_token.py]
+exec_command = [command for execute your app]
+exec_command_grep = [grep target for restart/kill]
