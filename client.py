@@ -17,7 +17,7 @@ if __name__ == '__main__':
             print('set unprocessed pull request...')
             pr = pull_requests[0]
             res = subprocess.check_output(
-                f'cd {webapp_settings["target_dir"]} | git fetch --all | git checkout {pr.sha}', shell=True)
+                f'{webapp_settings["base_dir"]}/client_pull.sh {webapp_settings["target_dir"]} {pr.sha}', shell=True)
             pr.is_launched = 1
             cn.s.commit()
             need_launch = True
