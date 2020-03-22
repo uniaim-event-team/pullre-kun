@@ -1,0 +1,9 @@
+alembic
+boto3
+cherrypy
+sqlalchemy
+flask
+flask_babel
+paste
+pytest
+werkzeug
