@@ -5,7 +5,6 @@ from logging.handlers import RotatingFileHandler
 
 from flask import Flask, request, session, redirect
 from flask_babel import Babel
-from flask_wtf.csrf import CSRFProtect
 import cherrypy
 from paste.translogger import TransLogger
 
@@ -27,9 +26,6 @@ def get_locale():
     return request.accept_languages.best_match(['ja', 'ja_JP', 'en', 'zh'])
 
 
-# setting for wtf
-CSRFProtect(app)
-app.config['WTF_CSRF_CHECK_DEFAULT'] = False
 app.secret_key = webapp_settings['app_secret_key']
 
 
