@@ -28,10 +28,12 @@ if __name__ == '__main__':
             cn.s.commit()
 
     if need_launch:
-        print('killing process...')
-        subprocess.check_output(
-            "ps -ef | grep -v grep| grep " + webapp_settings['exec_command_grep'] +
-            """ | awk '{print "sudo kill -9", $2}' | bash""", shell=True)
-        print('launch...')
-        res = subprocess.check_output(
-            f'{webapp_settings["exec_command"]}', shell=True)
+        if 'exec_command_grep' in webapp_settings:
+            print('killing process...')
+            subprocess.check_output(
+                "ps -ef | grep -v grep| grep " + webapp_settings['exec_command_grep'] +
+                """ | awk '{print "sudo kill -9", $2}' | bash""", shell=True)
+        if 'exec_command' in webapp_settings:
+            print('launch...')
+            res = subprocess.check_output(
+                f'{webapp_settings["exec_command"]}', shell=True)

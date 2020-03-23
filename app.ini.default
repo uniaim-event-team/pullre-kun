@@ -17,5 +17,5 @@ base_dir = /home/ec2-user/pullre-kun
 target_dir = [directory of the target repository, use fetch/checkout command at this repository.]
 basic_user = [basic username]
 basic_password = [token which created by get_basic_token.py]
-exec_command = [command for execute your app]
-exec_command_grep = [grep target for restart/kill]
+exec_command = [optional: command for execute your app]
+exec_command_grep = [optional: grep target for restart/kill]
