@@ -123,10 +123,16 @@ $ cd ~/pullre-kun
 $ nohup python3 app.py &
 ```
 
-## register servers and users
+## register servers
 
 Access https://(your-domain)/server/list, then you would see the whole servers.
 Then you click register button of staging servers.
+And access https://(your-domain)/master/server, and update the db_schema of each record.
+
+## register users
+
+Access https://(your-domain)/master/git_hub_users, and register the users.
+"login" is github user login, db_schema is the original schema of clone.
 
 # Note
 
