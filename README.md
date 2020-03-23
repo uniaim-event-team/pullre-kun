@@ -102,7 +102,7 @@ Add following line to crontab of **controller server**.
 Add following line to crontabs of **staging servers**.
 
 ```
-* * * * * cd /home/ec2-user/pullre-kun; python3 update_pull.py
+* * * * * cd /home/ec2-user/pullre-kun; python3 client.py
 ```
 
 ## run init.py
