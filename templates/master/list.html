@@ -4,13 +4,30 @@
 <head>
   <meta charset="UTF-8">
   <title>Master Maintenance</title>
+  <style>
+    .bottom {
+      border: none;
+      border-bottom: 2px solid #555;
+    }
+    .collapse {
+      border-collapse: collapse;
+    }
+    th {
+      text-align: left;
+      padding: 0 10px;
+    }
+    td {
+      text-align: left;
+      padding: 0 10px;
+    }
+  </style>
 </head>
 <body>
   <h1>{{ table_name }}</h1>
   <form action="/master/{{ table_name }}/create" method="GET"><input type="submit" value="create"/></form>
-  <table>
+  <table class="collapse">
     <thead>
-      <tr>
+      <tr class="bottom">
         <th></th>
         {% for c in columns %}
           <th>{{ c }}</th>
@@ -19,7 +36,7 @@
     </thead>
     <tbody>
       {% for r in list_data %}
-        <tr>
+        <tr class="bottom">
           <td>
             <form action="/master/{{ table_name }}/{{ r['id'] }}" method="GET"><input type="submit" value="show"/></form>
             <form action="/master/{{ table_name }}/{{ r['id'] }}/update" method="GET"><input type="submit" value="update"/></form>

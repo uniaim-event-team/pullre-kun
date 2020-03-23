@@ -4,15 +4,28 @@
 <head>
   <meta charset="UTF-8">
   <title>Master Maintenance</title>
+  <style>
+    .bottom {
+      border: none;
+      border-bottom: 2px solid #11f;
+      font-size: 16px;
+    }
+    .bottom:disabled {
+      border-bottom: 2px solid #555;
+    }
+  </style>
 </head>
 <body>
   <h1>{{ table_name }}</h1>
   <form method="POST">
-    {% for field in form %}
-      <div>
-        {{ label_with_errors(field) }}{{ field }}
-      </div>
-    {% endfor %}
+    <table>
+      {% for field in form %}
+        <tr>
+          <td>{{ label_with_errors(field) }}</td>
+          <td>{{ field(class='bottom') }}</td>
+        </tr>
+      {% endfor %}
+    </table>
     {% if button %}
     <input type="submit" value="{{ button }}">
     {% endif %}
