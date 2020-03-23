@@ -1,0 +1,16 @@
+{%- from 'form_macros.html' import label_with_errors, value -%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Master Maintenance</title>
+</head>
+<body>
+  <h1>Master Maintenance</h1>
+  {% for table_name in table_names %}
+    <div>
+      <a href="/master/{{ table_name }}">{{ table_name }}</a>
+    </div>
+  {% endfor %}
+</body>
+</html>

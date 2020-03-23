@@ -4,6 +4,8 @@ cherrypy
 sqlalchemy
 flask
 flask_babel
+flask_wtf
 paste
 pytest
 werkzeug
+wtforms

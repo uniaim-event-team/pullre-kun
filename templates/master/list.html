@@ -1,0 +1,36 @@
+{%- from 'form_macros.html' import label_with_errors, value -%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Master Maintenance</title>
+</head>
+<body>
+  <h1>{{ table_name }}</h1>
+  <form action="/master/{{ table_name }}/create" method="GET"><input type="submit" value="create"/></form>
+  <table>
+    <thead>
+      <tr>
+        <th></th>
+        {% for c in columns %}
+          <th>{{ c }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for r in list_data %}
+        <tr>
+          <td>
+            <form action="/master/{{ table_name }}/{{ r['id'] }}" method="GET"><input type="submit" value="show"/></form>
+            <form action="/master/{{ table_name }}/{{ r['id'] }}/update" method="GET"><input type="submit" value="update"/></form>
+            <form action="/master/{{ table_name }}/{{ r['id'] }}/delete"><input type="submit" value="delete" method="GET"/></form>
+          </td>
+          {% for c in columns %}
+            <td>{{ r[c] }}</td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</body>
+</html>

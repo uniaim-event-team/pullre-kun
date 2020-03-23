@@ -1,0 +1,13 @@
+{% macro label_with_errors(field) -%}
+  <label for="{{ field.name }}">{{ _(field.label.text) }}</label>
+  {% if field.errors %}
+    <div class="label_error">{% for error in field.errors %}{{ error }}{% endfor %}</div>
+  {% endif %}
+{%- endmacro %}
+{% macro value(field) -%}{% if field.data or field.data == 0 %}value="{{ field.data }}"{% endif %}{%- endmacro %}
+{% macro selected(field, option) -%}{% if field.data == option %}selected{% endif %}{%- endmacro %}
+{% macro error(field) -%}
+  {% if field.errors %}
+    <div class="label_error">{% for error in field.errors %}{{ error }}{% endfor %}</div>
+  {% endif %}
+{%- endmacro  %}

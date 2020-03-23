@@ -3,19 +3,21 @@ import os
 import random
 from logging.handlers import RotatingFileHandler
 
+import cherrypy
 from flask import Flask, request, session, redirect
 from flask_babel import Babel
-import cherrypy
+from flask_wtf.csrf import CSRFProtect
 from paste.translogger import TransLogger
 
 from config import webapp_settings
-from controller import server
+from controller import server, master
 
 codecs.register(
     lambda name: codecs.lookup('utf8') if name == 'utf8mb4' else None)
 
 app = Flask(__name__)
 app.register_blueprint(server.app, url_prefix='')
+app.register_blueprint(master.app, url_prefix='')
 
 # setting for babel
 babel = Babel(app)
@@ -24,6 +26,11 @@ babel = Babel(app)
 @babel.localeselector
 def get_locale():
     return request.accept_languages.best_match(['ja', 'ja_JP', 'en', 'zh'])
+
+
+# setting for wtf
+CSRFProtect(app)
+app.config['WTF_CSRF_CHECK_DEFAULT'] = False
 
 
 app.secret_key = webapp_settings['app_secret_key']

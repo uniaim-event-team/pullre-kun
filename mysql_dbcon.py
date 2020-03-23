@@ -61,3 +61,24 @@ class Connection:
         基本は呼び出しちゃダメです。なのでプライベートメソッドにしてます。
         """
         Session.remove()
+
+    def upsert_from_form(self, model_class, form):
+        args_dict = {}
+        for column in model_class.__table__.columns:
+            if hasattr(form, column.name) and getattr(form, column.name).data:
+                # TODO Noneや''の時に更新されない
+                args_dict[column.name] = getattr(form, column.name).data
+        if form.id.data:
+            # update (if form has id)
+            id_ = form.id.data
+            self.s.query(model_class).filter(model_class.id == id_).update(
+                args_dict, synchronize_session=False)
+        else:
+            # create
+            new_model = model_class(**args_dict)
+            self.s.add(new_model)
+            self.s.flush()
+            self.s.refresh(new_model)
+            id_ = new_model.id
+        self.s.commit()
+        return id_

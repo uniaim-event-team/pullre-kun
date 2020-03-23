@@ -1,0 +1,24 @@
+{%- from 'form_macros.html' import label_with_errors, value -%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Master Maintenance</title>
+</head>
+<body>
+  <h1>{{ table_name }}</h1>
+  <form method="POST">
+    {% for field in form %}
+      <div>
+        {{ label_with_errors(field) }}{{ field }}
+      </div>
+    {% endfor %}
+    {% if button %}
+    <input type="submit" value="{{ button }}">
+    {% endif %}
+  </form>
+  <form method="GET" action="/master/{{ table_name }}">
+    <input type="submit" value="back" />
+  </form>
+</body>
+</html>
