@@ -23,42 +23,19 @@ class Connection:
 
     def __enter__(self):
         """
-        この関数の中身は _explicit_enterに移動しました。
+        create connection object
         :return:
         """
-        return self._explicit_enter()
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        """
-        この関数の中身は_explicit_exitに移動しました。
-        :param exc_type:
-        :param exc_val:
-        :param exc_tb:
-        :return:
-        """
-        self._explicit_exit(exc_type, exc_val, exc_tb)
-
-    def _explicit_enter(self, engine=None):
-        """
-        __enter__の中で行なっている処理(セッションの作成等)をここに移動して
-        デバッグ時などに明示的にその処理を呼び出せるようにするための関数。
-        基本は呼び出しちゃダメです。なのでプライベートメソッドにしてます。
-
-        :return: self
-        """
-        self.engine = engine or c.engine
+        self.engine = c.engine
         Session.configure(bind=self.engine)
         self.s = Session()
         if self.execution_options:
             self.s.connection(execution_options=self.execution_options)
         return self
 
-    # noinspection PyMethodMayBeStatic,PyUnusedLocal
-    def _explicit_exit(self, exc_type=None, exc_val=None, exc_tb=None):
+    def __exit__(self, exc_type, exc_val, exc_tb):
         """
-        __exit__の中で行なっている処理(セッションの破棄)をここに移動して
-        デバッグ時などに明示的にその処理を呼び出せるようにするための関数。
-        基本は呼び出しちゃダメです。なのでプライベートメソッドにしてます。
+        remove session
         """
         Session.remove()
 
