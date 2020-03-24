@@ -43,7 +43,7 @@ def check_and_update_pull_request():
         db_number_dict = {p.number: p for p in db_pull_request_list}
         stopped_server_list = cn.s.query(Server).filter(
             ~cn.s.query(PullRequest).filter(
-                PullRequest.server_id == Server.id, PullRequest.state != 'open').exists()
+                PullRequest.server_id == Server.id, PullRequest.state == 'open').exists()
         ).all()
         for pull_request in github_pull_request_list:
             if pull_request['number'] not in db_number_dict.keys():
