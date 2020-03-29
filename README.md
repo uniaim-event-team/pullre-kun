@@ -5,6 +5,7 @@ Light weight netlify-like server-side CI build system using EC2 instance
 - No docker.
 - Some IAM policies(DescribeInstances, StartInstances, StopInstances) are needed.
 - At least, two ec2-instances are needed. 
+- One MySQL like database is needed.
 
 # License
 
@@ -76,6 +77,10 @@ note: if you use amazon linux2,
 ```bash
 $ sudo yum install mysql
 ```
+
+## run or install some MySQL like database
+
+Run or install some MySQL like database.
 
 ## clone pullre-kun
 
