@@ -6,6 +6,10 @@ Light weight netlify-like server-side CI build system using EC2 instance
 - Some IAM policies(DescribeInstances, StartInstances, StopInstances) are needed.
 - At least, two ec2-instances are needed. 
 
+# License
+
+MIT
+
 # Concept / Purpose of this application
 
 create PR (on GitHub) -> start EC2 instance automatically -> happy!
