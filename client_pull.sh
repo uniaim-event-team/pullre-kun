@@ -2,6 +2,6 @@
 
 cd $1
 git reset --hard
-git clean -f
+git clean -f -d
 git fetch --all
 git checkout $2
