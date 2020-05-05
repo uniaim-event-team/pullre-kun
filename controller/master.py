@@ -8,12 +8,14 @@ app = Blueprint(__name__, "master")
 
 
 @app.route('/master')
+@need_basic_auth
 def master_top():
     return render_template('master/top.html', table_names=[table_name for table_name in table_label_dict.keys()])
 
 
 @app.route('/master/<table_name>')
 @app.route('/master/<table_name>/list')
+@need_basic_auth
 def master_list(table_name):
     if request.method == 'GET':
         with Connection() as cn:
@@ -29,6 +31,7 @@ def master_list(table_name):
 
 
 @app.route('/master/<table_name>/create', methods=['GET', 'POST'])
+@need_basic_auth
 def master_create(table_name):
     if request.method == 'GET':
         with Connection() as cn:
@@ -44,6 +47,7 @@ def master_create(table_name):
 
 
 @app.route('/master/<table_name>/<int:id_>/update', methods=['GET', 'POST'])
+@need_basic_auth
 def master_update(table_name, id_):
     if request.method == 'GET':
         with Connection() as cn:
@@ -63,6 +67,7 @@ def master_update(table_name, id_):
 
 
 @app.route('/master/<table_name>/<int:id_>')
+@need_basic_auth
 def master_show(table_name, id_):
     if request.method == 'GET':
         with Connection() as cn:
@@ -73,6 +78,7 @@ def master_show(table_name, id_):
 
 
 @app.route('/master/<table_name>/<int:id_>/delete', methods=['GET', 'POST'])
+@need_basic_auth
 def master_delete(table_name, id_):
     if request.method == 'GET':
         with Connection() as cn:
