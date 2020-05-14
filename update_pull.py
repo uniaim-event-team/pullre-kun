@@ -1,5 +1,6 @@
-from service.pull import check_and_update_pull_request
+from service.pull import GitHubConnector
 
 
 if __name__ == '__main__':
-    check_and_update_pull_request()
+    gc = GitHubConnector()
+    gc.check_and_update_pull_request()

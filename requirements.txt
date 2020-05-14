@@ -7,5 +7,6 @@ flask_babel
 flask_wtf
 paste
 pytest
+pyjwt
 werkzeug
 wtforms

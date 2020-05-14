@@ -9,6 +9,9 @@ mysql_additional = charset=utf8mb4
 owner = [github owner of the repository (user)]
 token = [github token]
 repo = [github repository]
+github_app_id = [github app id]
+github_app_installation_id = [github app installation id]
+github_private_key = [github secret key]
 AWS_ACCESS_KEY_ID = [AWS ACCESS KEY ID]
 AWS_SECRET_KEY = [AWS SECRET KEY]
 app_secret_key = somekey

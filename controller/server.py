@@ -7,7 +7,7 @@ from basic import need_basic_auth
 from config import webapp_settings
 from model import Server
 from mysql_dbcon import Connection
-from service.pull import check_and_update_pull_request
+from service.pull import GitHubConnector
 
 app = Blueprint(__name__, "server")
 
@@ -88,4 +88,11 @@ def server_stop():
 @need_basic_auth
 def pull_list():
     # for manual update
-    return json.dumps(check_and_update_pull_request())
+    gc = GitHubConnector()
+    return json.dumps(gc.check_and_update_pull_request())
+
+
+@app.route('/webhook/push', methods=['POST'])
+def webhook_push():
+    gc = GitHubConnector()
+    return json.dumps(gc.check_and_update_pull_request())

@@ -23,6 +23,7 @@ class Server(BaseObject):
     name = Column(Text)
     private_ip = Column(String(100))
     db_schema = Column(Text)
+    check_url = Column(Text)
 
     pull_requests = relationship('PullRequest', back_populates='server')
 
@@ -41,6 +42,7 @@ class PullRequest(BaseObject):
     server_id = Column(BigInteger, ForeignKey('servers.id'))
     is_launched = Column(Integer)
     db_schema = Column(Text)
+    check_run_id = Column(BigInteger)
 
     server = relationship('Server', back_populates='pull_requests')
 
