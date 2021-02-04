@@ -4,7 +4,7 @@ import random
 from logging.handlers import RotatingFileHandler
 
 import cherrypy
-from flask import Flask, request, session, redirect
+from flask import Flask, request, session, redirect, send_from_directory
 from flask_babel import Babel
 from flask_wtf.csrf import CSRFProtect
 from paste.translogger import TransLogger
@@ -54,6 +54,11 @@ def ssl_redirect():
             url[0] = 'https'
             url[1] = webapp_settings['domain'] + '/' + '/'.join(url[1].split('/')[1:])
             return redirect('://'.join(url), 301)
+
+
+@app.route('/static/<path:path>', methods=['GET', 'POST'])
+def send_static_cdn(path):
+    return send_from_directory('static/', path)
 
 
 if __name__ == '__main__':

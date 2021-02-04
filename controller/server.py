@@ -1,11 +1,13 @@
 import json
+from typing import Optional
 
 from boto3.session import Session as BotoSession
 from flask import Blueprint, render_template, request
 
 from basic import need_basic_auth
 from config import webapp_settings
-from model import Server
+from formatter import safe_strftime
+from model import Server, HideServer
 from mysql_dbcon import Connection
 from service.pull import GitHubConnector
 
@@ -28,20 +30,30 @@ def server_list():
     instance_response = ec2.describe_instances()
 
     with Connection() as cn:
-        db_instance_id_list = [server.instance_id for server in cn.s.query(Server).all()]
+        server_list = cn.s.query(Server).all()
+        db_instance_id_dict = {server.instance_id: server for server in server_list}
+        hide_server_name_set = {hide_server.name for hide_server in cn.s.query(HideServer).all()}
 
     instance_list = []
     # TODO non-reserved instance
     for r in instance_response['Reservations']:
         for instance in r['Instances']:
             name_tag = [tag for tag in instance['Tags'] if tag['Key'] == 'Name']
+            name = name_tag[0]['Value'] if name_tag else ''
+            if name in hide_server_name_set:
+                continue
+            server: Optional[Server] = db_instance_id_dict.get(instance['InstanceId'])
             instance_list.append({
                 'InstanceId': instance['InstanceId'],
                 'State': instance['State']['Name'],
-                'Name': name_tag[0]['Value'] if name_tag else '',
+                'Name': name,
                 'PrivateIpAddress': instance['NetworkInterfaces'][0]['PrivateIpAddress']
                 if instance['NetworkInterfaces'] else '',
-                'Registered': instance['InstanceId'] in db_instance_id_list,
+                'Registered': instance['InstanceId'] in db_instance_id_dict,
+                'Staging': server and server.is_staging,
+                'AutoStartAt': safe_strftime(server and server.auto_start_at),
+                'AutoStopAt': safe_strftime(server and server.auto_stop_at),
+                'Id': server and server.id,
             })
     instance_list.sort(key=lambda x: x['Name'] + '____' + x['InstanceId'])
     return render_template('server/list.html', instance_list=instance_list)

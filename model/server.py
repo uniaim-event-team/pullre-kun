@@ -25,8 +25,19 @@ class Server(BaseObject):
     db_schema = Column(Text)
     check_url = Column(Text)
     is_staging = Column(Integer)
+    auto_start_at = Column(DateTime)
+    auto_stop_at = Column(DateTime)
 
     pull_requests = relationship('PullRequest', back_populates='server')
+
+
+class HideServer(BaseObject):
+    __tablename__ = 'hide_servers'
+
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    created_at = Column(DateTime, default=current_timestamp(), nullable=False)
+    updated_at = Column(DateTime, default=current_timestamp(), onupdate=current_timestamp(), nullable=False)
+    name = Column(Text)
 
 
 class PullRequest(BaseObject):

@@ -3,29 +3,50 @@
 <head>
   <meta charset="UTF-8">
   <title>pullre-kun</title>
+  <link rel="stylesheet" href="/static/simple.css">
 </head>
 <body>
 <table>
+  <thead>
+    <tr>
+      <td>use</td>
+      <td>name</td>
+      <td>id</td>
+      <td>state</td>
+      <td>auto start at(UTC)</td>
+      <td>auto stop at(UTC)</td>
+      <td></td>
+      <td></td>
+      <td></td>
+    </tr>
+  </thead>
 {% for instance in instance_list %}
   <tr>
+    <td>{% if instance['Staging'] %}staging{% endif %}</td>
     <td>{{ instance['Name'] }}</td>
     <td>{{ instance['InstanceId'] }}</td>
     <td>{{ instance['State'] }}</td>
+    <td>{{ instance['AutoStartAt'] }}</td>
+    <td>{{ instance['AutoStopAt'] }}</td>
     <td>
-      <form action="/server/register" method="post">
-        <input type="hidden" name="InstanceId" value="{{ instance['InstanceId'] }}" />
-        <input type="hidden" name="Name" value="{{ instance['Name'] }}" />
-        <input type="hidden" name="PrivateIpAddress" value="{{ instance['PrivateIpAddress'] }}" />
-        {% if not instance['Registered'] %}
-        <input type="submit" value="register" />
-        {% endif %}
-      </form>
+      {% if not instance['Registered'] %}
+        <form action="/server/register" method="post">
+          <input type="hidden" name="InstanceId" value="{{ instance['InstanceId'] }}" />
+          <input type="hidden" name="Name" value="{{ instance['Name'] }}" />
+          <input type="hidden" name="PrivateIpAddress" value="{{ instance['PrivateIpAddress'] }}" />
+            <button type="submit">register</button>
+        </form>
+      {% else %}
+        <form action="/master/servers/{{ instance['Id'] }}/update" method="get">
+          <button type="submit">edit</button>
+        </form>
+      {% endif %}
     </td>
     <td>
       <form action="/server/start" method="post">
         <input type="hidden" name="InstanceId" value="{{ instance['InstanceId'] }}" />
         {% if instance['State'] != 'running' %}
-        <input type="submit" value="start" />
+          <button type="submit">start</button>
         {% endif %}
       </form>
     </td>
@@ -33,7 +54,7 @@
       <form action="/server/stop" method="post">
         <input type="hidden" name="InstanceId" value="{{ instance['InstanceId'] }}" />
         {% if instance['State'] != 'stopped' %}
-        <input type="submit" value="stop" />
+          <button type="submit">stop</button>
         {% endif %}
       </form>
     </td>
