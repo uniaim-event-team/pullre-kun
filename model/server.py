@@ -24,7 +24,7 @@ class Server(BaseObject):
     private_ip = Column(String(100))
     db_schema = Column(Text)
     check_url = Column(Text)
-    is_staging = Column(Integer)
+    is_staging = Column(Integer, default=0)
     auto_start_at = Column(DateTime)
     auto_stop_at = Column(DateTime)
 
