@@ -80,6 +80,7 @@ class GitHubConnector():
             # insert pull requests
             db_number_dict = {p.number: p for p in db_pull_request_list}
             stopped_server_list = cn.s.query(Server).filter(
+                Server.is_staging == 1,
                 ~cn.s.query(PullRequest).filter(
                     PullRequest.server_id == Server.id, PullRequest.state == 'open').exists()
             ).all()
@@ -143,6 +144,7 @@ class GitHubConnector():
             if self.token:
                 server_list = cn.s.query(Server, PullRequest).join(
                     PullRequest, Server.id == PullRequest.server_id).filter(
+                    Server.is_staging == 1,
                     PullRequest.state == 'open'
                 ).all()
 

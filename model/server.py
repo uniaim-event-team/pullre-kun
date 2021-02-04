@@ -24,6 +24,7 @@ class Server(BaseObject):
     private_ip = Column(String(100))
     db_schema = Column(Text)
     check_url = Column(Text)
+    is_staging = Column(Integer)
 
     pull_requests = relationship('PullRequest', back_populates='server')
 
