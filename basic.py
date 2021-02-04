@@ -1,6 +1,7 @@
 from functools import wraps
 import hashlib
 from time import sleep
+from typing import Optional
 
 from flask import make_response, request
 from werkzeug.datastructures import Authorization
@@ -24,7 +25,7 @@ def need_basic_auth(f):
 def basic_authorization():
     scheme = 'Basic'
 
-    def get_auth():
+    def get_auth() -> Optional[Authorization]:
         _auth = request.authorization
 
         if _auth is None and 'Authorization' in request.headers:
@@ -46,7 +47,7 @@ def basic_authorization():
 
         return _auth
 
-    auth = get_auth()
+    auth: Optional[Authorization] = get_auth()
 
     # Flask normally handles OPTIONS requests on its own, but in the
     # case it is configured to forward those to the application, we

@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect
-from form.master import MasterForm, MasterSearchForm, table_label_dict
 
+from basic import need_basic_auth
+from form.master import MasterForm, MasterSearchForm, table_label_dict
 from mysql_dbcon import Connection
 from controller.common import url_for_ep
 
