@@ -103,7 +103,7 @@ Create app.ini file. The sample is app.ini.default. And deploy it for the whole 
 Add following line to crontab of **controller server**.
 
 ```
-* * * * * cd /home/ec2-user/pullre-kun; python3 batch/update_pull.py
+* * * * * cd /home/ec2-user/pullre-kun; python3 update_pull.py
 ```
 
 ## edit crontab of staging server
