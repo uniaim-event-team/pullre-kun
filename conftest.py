@@ -43,8 +43,8 @@ try:
             if lines[i].find('pullre') > -1:
                 lines[i] = lines[i].replace('pullre', 'test_pullre')
     with open('alembic_copy/alembic.ini', 'w') as f:
-        for l in lines:
-            f.write(l + '\n')
+        for line in lines:
+            f.write(line + '\n')
     res = subprocess.check_output(
         'export PYTHONPATH=' + webapp_settings['base_dir'] + '/pullre-kun/; cd alembic_copy;'
         ' alembic revision --autogenerate -m "test"; alembic upgrade head', shell=True)
