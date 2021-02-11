@@ -1,6 +1,6 @@
 import base64
 import re
-from datetime import datetime
+from datetime import datetime, timedelta
 import json
 import subprocess
 import traceback
@@ -12,7 +12,7 @@ import jwt
 
 from config import webapp_settings
 from model import Server, PullRequest, GitHubUser
-from model.commit import Commit
+from model.commit import Commit, Issue
 from mysql_dbcon import Connection
 
 
@@ -307,5 +307,36 @@ class GitHubConnector:
             result = json.loads(res.read())
         return result
 
-    def get_issues_all(self):
-        pass
+    def save_all_issues(self, total_page=1, since=None):
+        for p in range(total_page):
+            issues = self.get_issues_all(p, since)
+            with Connection() as cn:
+                number_list = [c['number'] for c in issues]
+                exist_issue_dict = {
+                    issue.number: issue for issue in cn.s.query(Issue).filter(Issue.number.in_(number_list)).all()}
+                for issue in issues:
+                    db_issue = exist_issue_dict.get(issue['number'], Issue())
+                    db_issue.number = issue['number']
+                    db_issue.state = issue['state']
+                    db_issue.title = issue['title']
+                    db_issue.body = issue['body']
+                    db_issue.labels = ','.join([label['name'] for label in issue['labels']])
+                    db_issue.assignee = issue['assignee']['login'] if issue['assignee'] else None
+                    cn.s.add(db_issue)
+                cn.s.commit()
+
+    def get_issues_all(self, page=0, since=None):
+        if not since:
+            since = (datetime.now() - timedelta(days=1)).strftime('%Y-%m-%dT%H:%M:%SZ')
+        req = urllib.request.Request(
+            f'https://api.github.com/repos/{webapp_settings["owner"]}/{webapp_settings["repo"]}/'
+            f'issues?page={page}&per_page=100&state=all&since={since}&sort=created&direction=asc',
+            headers={
+                'Authorization': f'token {self.token}',
+                'Accept': 'application/vnd.github.v3+json',
+            },
+            method='GET'
+        )
+        with urllib.request.urlopen(req) as res:
+            result = json.loads(res.read())
+        return result
