@@ -1,5 +1,4 @@
-﻿import codecs
-import os
+﻿import os
 import random
 from logging.handlers import RotatingFileHandler
 
@@ -12,8 +11,6 @@ from paste.translogger import TransLogger
 from config import webapp_settings
 from controller import server, master
 
-codecs.register(
-    lambda name: codecs.lookup('utf8') if name == 'utf8mb4' else None)
 
 app = Flask(__name__)
 app.register_blueprint(server.app, url_prefix='')

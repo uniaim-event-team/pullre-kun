@@ -1,8 +1,13 @@
+import codecs
 from typing import Optional
 
 from sqlalchemy.engine import create_engine
 from config import webapp_settings
 from model import Session
+
+
+codecs.register(
+    lambda name: codecs.lookup('utf8') if name == 'utf8mb4' else None)
 
 
 class ConnectionPooling(object):

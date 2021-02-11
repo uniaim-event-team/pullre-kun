@@ -1,19 +1,22 @@
 import base64
+import re
 from datetime import datetime
 import json
 import subprocess
 import traceback
 import urllib.request
+from typing import Tuple, List
 
 from boto3.session import Session as BotoSession
 import jwt
 
 from config import webapp_settings
 from model import Server, PullRequest, GitHubUser
+from model.commit import Commit
 from mysql_dbcon import Connection
 
 
-class GitHubConnector():
+class GitHubConnector:
 
     def __init__(self):
         n = int(datetime.now().timestamp())
@@ -216,3 +219,93 @@ class GitHubConnector():
         with urllib.request.urlopen(req) as res:
             check_run_result = json.loads(res.read())
         return check_run_result
+
+    def check_newest_hash(self):
+        req = urllib.request.Request(webapp_settings['sha_url'])
+        with urllib.request.urlopen(req) as res:
+            sha = re.sub(r' .+', '', res.read().decode().replace('commit ', ''))
+        with Connection() as cn:
+            temp_sha_list = self.get_sha_list(cn, sha)
+            if not temp_sha_list:
+                return
+            sha_list = []
+            sha_set = set()
+            for sha, message in temp_sha_list:
+                if sha in sha_set:
+                    continue
+                sha_set.add(sha)
+                sha_list.append((sha, message))
+            message = '以下の内容がリリースされました！\n' + '\n'.join([s for _, s in sha_list])
+            if webapp_settings.get('google_chat_url'):
+                # notify to google chat
+                headers = {"Content-Type": "application/json"}
+                req = urllib.request.Request(
+                    webapp_settings.get('google_chat_url'), data=json.dumps({'text': message}).encode('utf-8'),
+                    method='POST', headers=headers)
+                with urllib.request.urlopen(req) as res:
+                    print(res.read())
+            cn.s.query(Commit).filter(Commit.sha.in_([id_ for id_, _ in sha_list])).update(
+                {'production_reported': 1}, synchronize_session=False)
+            cn.s.commit()
+        print(message)
+
+    def get_sha_list(self, cn, sha) -> List[Tuple[str, str]]:
+        if not sha:
+            return []
+        commit_data: Commit = cn.s.query(Commit).filter(Commit.sha == sha).first()
+        if commit_data.production_reported:
+            return []
+        message = commit_data.message
+        if message.find('Merge pull request #') > -1:
+            pr_number = re.sub(r' .+', '', message.replace('Merge pull request #', ''))
+            pr: PullRequest = cn.s.query(PullRequest).filter(PullRequest.number == pr_number).first()
+            if pr:
+                message = pr.title
+        return [(sha, message)] +\
+            self.get_sha_list(cn, commit_data.parent_a) + self.get_sha_list(cn, commit_data.parent_b)
+
+    def save_all_commits(self, total_page=1):
+        for p in range(total_page):
+            commits = self.get_commits(p)
+            with Connection() as cn:
+                sha_list = [c['sha'] for c in commits]
+                exist_sha_set = {
+                    sha for sha, in cn.s.query(Commit.sha).filter(Commit.sha.in_(sha_list)).all()}
+                bulk_insert_list = []
+                for commit in commits:
+                    if commit['sha'] in exist_sha_set:
+                        continue
+                    sha = commit['sha']
+                    message = commit['commit']['message']
+                    parent_a = None
+                    parent_b = None
+                    if len(commit['parents']) > 0:
+                        parent_a = commit['parents'][0]['sha']
+                    if len(commit['parents']) > 1:
+                        parent_b = commit['parents'][1]['sha']
+                    bulk_insert_list.append({
+                        'sha': sha,
+                        'message': message,
+                        'parent_a': parent_a,
+                        'parent_b': parent_b,
+                        'production_reported': 0,
+                    })
+                cn.s.bulk_insert_mappings(Commit, bulk_insert_list)
+                cn.s.commit()
+
+    def get_commits(self, page=0):
+        req = urllib.request.Request(
+            f'https://api.github.com/repos/{webapp_settings["owner"]}/{webapp_settings["repo"]}/'
+            f'commits?page={page}&per_page=100',
+            headers={
+                'Authorization': f'token {self.token}',
+                'Accept': 'application/vnd.github.v3+json',
+            },
+            method='GET'
+        )
+        with urllib.request.urlopen(req) as res:
+            result = json.loads(res.read())
+        return result
+
+    def get_issues_all(self):
+        pass
