@@ -233,6 +233,8 @@ class GitHubConnector:
             for sha, message in temp_sha_list:
                 if sha in sha_set:
                     continue
+                if message.find('Merge branch ') > -1:
+                    continue
                 sha_set.add(sha)
                 sha_list.append((sha, message))
             message = '以下の内容がリリースされました！\n' + '\n'.join([s for _, s in sha_list])
