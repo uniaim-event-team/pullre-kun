@@ -246,7 +246,7 @@ class GitHubConnector:
                     method='POST', headers=headers)
                 with urllib.request.urlopen(req) as res:
                     print(res.read())
-            cn.s.query(Commit).filter(Commit.sha.in_([id_ for id_, _ in sha_list])).update(
+            cn.s.query(Commit).filter(Commit.sha.in_([id_ for id_, _ in temp_sha_list])).update(
                 {'production_reported': 1}, synchronize_session=False)
             cn.s.commit()
         print(message)
