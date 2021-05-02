@@ -246,6 +246,13 @@ class GitHubConnector:
                     method='POST', headers=headers)
                 with urllib.request.urlopen(req) as res:
                     print(res.read())
+            if webapp_settings.get('slack_url'):
+                headers = {"Content-Type": "application/json"}
+                req = urllib.request.Request(
+                    webapp_settings.get('slack_url'), data=json.dumps({'text': message}).encode('utf-8'),
+                    method='POST', headers=headers)
+                with urllib.request.urlopen(req) as res:
+                    print(res.read())
             cn.s.query(Commit).filter(Commit.sha.in_([id_ for id_, _ in temp_sha_list])).update(
                 {'production_reported': 1}, synchronize_session=False)
             cn.s.commit()
