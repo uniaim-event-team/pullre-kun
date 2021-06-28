@@ -5,6 +5,8 @@ sqlalchemy
 flask
 flask_babel
 flask_wtf
+markupsafe==1.1.1
+mysql-connector
 paste
 pytest
 pyjwt
