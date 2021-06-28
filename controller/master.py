@@ -5,7 +5,7 @@ from form.master import MasterForm, MasterSearchForm, table_label_dict
 from mysql_dbcon import Connection
 from controller.common import url_for_ep
 
-app = Blueprint(__name__, "master")
+app = Blueprint(__name__.replace('.', '_'), "master")
 
 
 @app.route('/master')

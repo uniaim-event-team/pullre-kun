@@ -11,7 +11,7 @@ from model import Server, HideServer
 from mysql_dbcon import Connection
 from service.pull import GitHubConnector
 
-app = Blueprint(__name__, "server")
+app = Blueprint(__name__.replace('.', '_'), "server")
 
 
 @app.route('/')
