@@ -60,13 +60,16 @@ $ sudo yum install git
 
 Setup your application to staging servers.
 
-## install python3
+## install python3.8
 
-Install python3 for the whole instances.
+Install python3.8 for the whole instances.
 note: if you use amazon linux2,
 
 ```bash
-$ sudo yum install python3
+$ amazon-linux-extras install python3.8
+$ sudo yum python38-devel
+$ sudo yum install gcc
+$ sudo yum install gcc-c++
 ```
 
 ## install mysql-client
@@ -103,7 +106,7 @@ Create app.ini file. The sample is app.ini.default. And deploy it for the whole 
 Add following line to crontab of **controller server**.
 
 ```
-* * * * * cd /home/ec2-user/pullre-kun; python3 update_pull.py
+* * * * * cd /home/ec2-user/pullre-kun; python3.8 update_pull.py
 ```
 
 ## edit crontab of staging server
@@ -111,7 +114,7 @@ Add following line to crontab of **controller server**.
 Add following line to crontabs of **staging servers**.
 
 ```
-* * * * * cd /home/ec2-user/pullre-kun; python3 client.py
+* * * * * cd /home/ec2-user/pullre-kun; python3.8 client.py
 ```
 
 ## run init.py
@@ -120,7 +123,7 @@ Execute following command at **controller server**.
 
 ```bash
 $ cd ~/pullre-kun
-$ python3 init.py
+$ python3.8 init.py
 ```
 
 ## run pullre-kun application
@@ -129,7 +132,7 @@ Execute following command at **controller server**.
 
 ```bash
 $ cd ~/pullre-kun
-$ nohup python3 app.py &
+$ nohup python3.8 app.py &
 ```
 
 ## register servers
