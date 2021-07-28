@@ -96,6 +96,7 @@ $ sudo cat /var/log/mysqld.log
 $ mysql -u root
 (input temporary password)
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'ragp)!WJ(3UC';
+('ragp)!WJ(3UC' is the password... you may change it as you like)
 CREATE DATABASE pullre CHARACTER SET utf8mb4;
 \q
 $ sudo vi /etc/my.cnf
