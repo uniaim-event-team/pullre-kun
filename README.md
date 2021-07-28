@@ -66,8 +66,8 @@ Install python3.8 for the whole instances.
 note: if you use amazon linux2,
 
 ```bash
-$ amazon-linux-extras install python3.8
-$ sudo yum python38-devel
+$ sudo amazon-linux-extras install python3.8
+$ sudo yum install python38-devel
 $ sudo yum install gcc
 $ sudo yum install gcc-c++
 ```
@@ -84,6 +84,15 @@ $ sudo yum install mysql
 ## run or install some MySQL like database
 
 Run or install some MySQL like database.
+
+note: if you want to install mysql-server,
+
+```bash
+$ sudo yum localinstall https://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm
+$ sudo yum install mysql-community-server
+$ sudo service mysqld.service restart
+$ sudo cat /var/log/mysqld.log
+```
 
 ## clone pullre-kun
 
