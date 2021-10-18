@@ -225,17 +225,13 @@ class GitHubConnector:
         with urllib.request.urlopen(req) as res:
             sha = re.sub(r' .+', '', res.read().decode().replace('commit ', ''))
         with Connection() as cn:
-            temp_sha_list = self.get_sha_list(cn, sha)
+            temp_sha_list = self.get_sha_list(cn, sha, set())
             if not temp_sha_list:
                 return
             sha_list = []
-            sha_set = set()
             for sha, message in temp_sha_list:
-                if sha in sha_set:
-                    continue
                 if message.find('Merge branch ') > -1:
                     continue
-                sha_set.add(sha)
                 sha_list.append((sha, message))
             message = '以下の内容がリリースされました！\n' + '\n'.join([s for _, s in sha_list])
             if webapp_settings.get('google_chat_url'):
@@ -258,9 +254,10 @@ class GitHubConnector:
             cn.s.commit()
         print(message)
 
-    def get_sha_list(self, cn, sha) -> List[Tuple[str, str]]:
-        if not sha:
+    def get_sha_list(self, cn, sha, used_set) -> List[Tuple[str, str]]:
+        if not sha or sha in used_set:
             return []
+        used_set.add(sha)
         commit_data: Commit = cn.s.query(Commit).filter(Commit.sha == sha).first()
         if commit_data.production_reported:
             return []
@@ -271,7 +268,8 @@ class GitHubConnector:
             if pr:
                 message = pr.title
         return [(sha, message)] +\
-            self.get_sha_list(cn, commit_data.parent_a) + self.get_sha_list(cn, commit_data.parent_b)
+            self.get_sha_list(cn, commit_data.parent_a, used_set) + \
+            self.get_sha_list(cn, commit_data.parent_b, used_set)
 
     def save_all_commits(self, total_page=1):
         for p in range(total_page):
