@@ -93,7 +93,7 @@ $ sudo yum install mysql-community-server
 $ sudo service mysqld.service restart
 $ sudo cat /var/log/mysqld.log
 (watch temporary password)
-$ mysql -u root
+$ mysql -u root -p
 (input temporary password)
 ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'ragp)!WJ(3UC';
 ('ragp)!WJ(3UC' is the password... you may change it as you like)
