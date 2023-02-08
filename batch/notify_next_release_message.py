@@ -24,10 +24,11 @@ if __name__ == '__main__':
         if not next_release_message or not next_release_message.content:
             exit
 
-        next_release_notify_title = webapp_settings.get('next_release_notify_title', '次回リリース対象の注意事項一覧です！')
+        next_release_notify_title = webapp_settings.get('next_release_notify_title', 'リリース待ちのバグリスクです！')
         column = webapp_settings.get('github_pr_column').replace(',', '|')
         suffix = webapp_settings.get('github_pr_suffix')
-        message = '\n'.join(['\n'.join(map(str, v)) for v in re.findall(fr'({column})(.*?){suffix}', next_release_message.content)])
+        message = '\n'.join(['\n'.join(map(str, v)) for v in re.findall(fr'({column})(.*?){suffix}', next_release_message.content)])\
+            .replace('\\r\\n', '\n').replace('\\n\\r', '\n')
         req = urllib.request.Request(
             webapp_settings.get('slack_url'),
             data=json.dumps({'text': f'{next_release_notify_title}\n\n{message}'}).encode('utf-8'),
