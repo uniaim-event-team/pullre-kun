@@ -76,7 +76,5 @@ class NextReleaseMessage(BaseObject):
     id = Column(BigInteger, primary_key=True, autoincrement=True)
     created_at = Column(DateTime, default=current_timestamp(), nullable=False)
     updated_at = Column(DateTime, default=current_timestamp(), onupdate=current_timestamp(), nullable=False)
-    # 1: done, 2: inprogress
-    state = Column(Integer)
-    sha = Column(String(40), unique=True, nullable=False)
+    hash = Column(String(64), unique=True, nullable=False)
     content = Column(Text)

@@ -1,6 +1,4 @@
-import datetime
-import re
-import urllib.request
+import hashlib
 
 from config import webapp_settings
 from mysql_dbcon import Connection
@@ -9,32 +7,19 @@ from service.pull_request import get_unreleased_pull_request
 
 
 if __name__ == '__main__':
-    req = urllib.request.Request(webapp_settings['sha_url'])
-    with urllib.request.urlopen(req) as res:
-        sha = re.sub(r' .+', '', res.read().decode().replace('commit ', ''))
-    if not sha:
-        exit
-
     with Connection() as cn:
-        next_release_message = cn.s.query(NextReleaseMessage).filter(NextReleaseMessage.sha == sha).first()
-        if next_release_message is not None and (
-            next_release_message.state == 1 or
-            next_release_message.created_at > datetime.datetime.now() + datetime.timedelta(minutes=-1)
-        ):
+        pull_requests = get_unreleased_pull_request()
+        if not pull_requests:
             exit
 
-        pull_request = get_unreleased_pull_request()
-        if not pull_request:
+        hash = hashlib.sha512(''.join(map(str, [pr.number for pr in pull_requests])).encode('utf-8')).hexdigest()[0:64]
+        next_release_message = cn.s.query(NextReleaseMessage).filter(NextReleaseMessage.hash == hash).first()
+        if next_release_message:
             exit
 
         if not next_release_message:
-            next_release_message = NextReleaseMessage(state=2, sha=sha)
-            cn.s.add(next_release_message)
+            cn.s.add(NextReleaseMessage(hash=hash, content='\n'.join([pr.body for pr in pull_requests])))
             cn.s.commit()
 
-        cn.s.query(NextReleaseMessage).filter(NextReleaseMessage.sha == sha) \
-            .update({'state': 1, 'content': pull_request.body}, synchronize_session=False)
-        cn.s.commit()
-
-        cn.s.query(NextReleaseMessage).filter(NextReleaseMessage.sha != sha).delete(synchronize_session=False)
+        cn.s.query(NextReleaseMessage).filter(NextReleaseMessage.hash != hash).delete(synchronize_session=False)
         cn.s.commit()
