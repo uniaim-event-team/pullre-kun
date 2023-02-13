@@ -9,7 +9,7 @@ from model import NextReleaseMessage
 from service.pull_request import get_unreleased_pull_request
 
 
-if __name__ == '__main__':
+def notify():
     if not webapp_settings.get('slack_url') or\
         not webapp_settings.get('github_pr_column') or not webapp_settings.get('github_pr_suffix'):
         exit
@@ -35,3 +35,7 @@ if __name__ == '__main__':
             method='POST', headers={'Content-Type': 'application/json'})
         with urllib.request.urlopen(req) as res:
             print(res.read())
+
+
+if __name__ == '__main__':
+    notify()
