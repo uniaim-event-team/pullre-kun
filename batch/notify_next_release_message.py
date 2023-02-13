@@ -28,7 +28,7 @@ if __name__ == '__main__':
         column = webapp_settings.get('github_pr_column').replace(',', '|')
         suffix = webapp_settings.get('github_pr_suffix')
         message = '\n'.join([v[1] for v in re.findall(fr'({column})((.|\s)*?){suffix}', next_release_message.content)])\
-            .replace('\\r\\n', '\n').replace('\\n\\r', '\n').replace('\\n', '\n')
+            .replace('\\r\\n', '\n').replace('\\n\\r', '\n').replace('\\n', '\n').replace('\n\n', '')
         req = urllib.request.Request(
             webapp_settings.get('slack_url'),
             data=json.dumps({'text': f'{next_release_notify_title}\n\n{message}'}).encode('utf-8'),
