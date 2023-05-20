@@ -20,10 +20,14 @@ app.register_blueprint(master.app, url_prefix='')
 babel = Babel(app)
 
 
-@babel.localeselector
+# removed this annotation as it seems no longer supported in Flask 2.3.2
+# instead using babel.init_app.
+#     - Adari
+#@babel.localeselector
 def get_locale():
     return request.accept_languages.best_match(['ja', 'ja_JP', 'en', 'zh'])
 
+babel.init_app(app, locale_selector=get_locale)
 
 # setting for wtf
 CSRFProtect(app)
