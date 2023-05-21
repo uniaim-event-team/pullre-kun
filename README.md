@@ -1,4 +1,4 @@
-# pullre-kun (Forked)
+# pullre-kun
 
 Light weight netlify-like server-side CI build system using EC2 instance
 
