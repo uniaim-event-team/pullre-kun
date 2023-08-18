@@ -50,6 +50,7 @@ class PullRequest(BaseObject):
     state = Column(String(20))
     sha = Column(String(64))
     title = Column(Text)
+    body = Column(Text)
     ref = Column(Text)
     server_id = Column(BigInteger, ForeignKey('servers.id'))
     is_launched = Column(Integer)
@@ -67,3 +68,13 @@ class GitHubUser(BaseObject):
     updated_at = Column(DateTime, default=current_timestamp(), onupdate=current_timestamp(), nullable=False)
     login = Column(String(128), nullable=False, unique=True)
     db_schema = Column(Text)
+
+
+class NextReleaseMessage(BaseObject):
+    __tablename__ = 'next_release_messages'
+
+    id = Column(BigInteger, primary_key=True, autoincrement=True)
+    created_at = Column(DateTime, default=current_timestamp(), nullable=False)
+    updated_at = Column(DateTime, default=current_timestamp(), onupdate=current_timestamp(), nullable=False)
+    hash = Column(String(64), unique=True, nullable=False)
+    content = Column(Text)

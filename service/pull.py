@@ -67,6 +67,7 @@ class GitHubConnector:
             'state': p['state'],
             'sha': p['head']['sha'],
             'title': p['title'],
+            'body': p['body'],
             'ref': p['head']['ref'],
             'login': p['user']['login'],
         } for p in pull_request_list]
@@ -104,6 +105,7 @@ class GitHubConnector:
                         state=pull_request['state'],
                         sha=pull_request['sha'],
                         title=pull_request['title'],
+                        body=pull_request['body'],
                         ref=pull_request['ref'],
                         is_launched=0,
                         db_schema=db_schema,

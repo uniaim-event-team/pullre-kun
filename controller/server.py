@@ -1,4 +1,6 @@
 import json
+import urllib.request
+import threading
 from typing import Optional
 
 from boto3.session import Session as BotoSession
@@ -10,6 +12,7 @@ from formatter import safe_strftime
 from model import Server, HideServer
 from mysql_dbcon import Connection
 from service.pull import GitHubConnector
+from batch.notify_next_release_message import notify
 
 app = Blueprint(__name__.replace('.', '_'), "server")
 
@@ -108,3 +111,16 @@ def pull_list():
 def webhook_push():
     gc = GitHubConnector()
     return json.dumps(gc.check_and_update_pull_request())
+
+
+@app.route('/release/next/list')
+def webhook_push():
+    if len({t.name for t in threading.enumerate() if t.name == 'notify-thread'}) == 0:
+        thread = threading.Thread(target=notify, name='notify-thread')
+        thread.start()
+    req = urllib.request.Request(
+        webapp_settings.get('slack_url'),
+        data=json.dumps({'text': '少々おまちください'}).encode('utf-8'),
+        method='POST', headers={'Content-Type': 'application/json'})
+    with urllib.request.urlopen(req) as res:
+        print(res.read())
