@@ -114,7 +114,7 @@ def webhook_push():
 
 
 @app.route('/release/next/list')
-def webhook_push():
+def release_next_list():
     if len({t.name for t in threading.enumerate() if t.name == 'notify-thread'}) == 0:
         thread = threading.Thread(target=notify, name='notify-thread')
         thread.start()
