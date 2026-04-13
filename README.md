@@ -88,20 +88,17 @@ Run or install some MySQL like database.
 note: if you want to install mysql-server,
 
 ```bash
-$ sudo yum localinstall https://dev.mysql.com/get/mysql80-community-release-el7-1.noarch.rpm
+$ sudo yum localinstall https://dev.mysql.com/get/mysql84-community-release-el7-1.noarch.rpm
 $ sudo yum install mysql-community-server
 $ sudo service mysqld.service restart
 $ sudo cat /var/log/mysqld.log
 (watch temporary password)
 $ mysql -u root -p
 (input temporary password)
-ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY 'ragp)!WJ(3UC';
+ALTER USER 'root'@'localhost' IDENTIFIED WITH caching_sha2_password BY 'ragp)!WJ(3UC';
 ('ragp)!WJ(3UC' is the password... you may change it as you like)
 CREATE DATABASE pullre CHARACTER SET utf8mb4;
 \q
-$ sudo vi /etc/my.cnf
-(add folowings at the last of file)
-default-authentication-plugin=mysql_native_password
 ```
 
 ## clone pullre-kun
