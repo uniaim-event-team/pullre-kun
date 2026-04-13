@@ -2,7 +2,7 @@ alembic
 boto3
 cherrypy
 sqlalchemy
-flask==2.3.2
+flask==3.1.3
 flask_babel==3.1.0
 flask_wtf
 mysql-connector-python
